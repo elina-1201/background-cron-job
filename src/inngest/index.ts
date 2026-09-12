@@ -65,7 +65,11 @@ const hartbeat = inngest.createFunction(
         const done = counts[ReportStatus.DONE];
         const failed = counts[ReportStatus.FAILED];
 
-        console.log(`[${date}] Heartbeat: ${pending} pending; ${done} done; ${failed} failed`);
+        console.log(
+            "\x1b[36m%s\x1b[0m %s",
+            `[${date}]`,
+            `Heartbeat: ${pending} pending; ${done} done; ${failed} failed`,
+        );
     },
 );
 

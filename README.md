@@ -44,12 +44,13 @@ Inngest functions (`src/inngest/index.ts`), served at `/api/inngest`:
 | --- | --- | --- |
 | `say-hello` | event `test/hello` | Sleeps 5s, returns a greeting. |
 | `make-report` | event `report/requested` | Sleeps 8s, then builds the result and marks the report `done`. `retries: 2`; throws if `topic` is `"fail"`. |
+| `heartbeat` | cron `* * * * *` | Runs every minute: counts reports by status and logs a heartbeat line. |
 
 ## Examples
 
 Captured from a real run against the two commands above.
 
-The 202 response — the report is created and accepted, but not finished:
+The `202` response, the report is created and accepted, but not finished:
 
 ```console
 $ curl -i -X POST http://localhost:3000/reports \
@@ -76,6 +77,12 @@ $ curl -s -w '\n[HTTP %{http_code}]\n' http://localhost:3000/reports/3
 {"id":3,"topic":"bounty","status":"done","result":"Report for bounty topic is ready."}
 [HTTP 200]
 ```
+### Dashboard and logs
+#### Inngest dashboard with the runs:
+![Inngest dashboard](./images/inngest-dashboard.png)
+
+#### Heartbeat function logs:
+![Heartbeat function logs](./images/inngest-logs.png)
 
 ## Retry logic
 Invalid input (like a missing topic) is rejected immediately with a 400 and never retried, because retrying won't fix bad data — only transient failures (a "wrong moment," like a temporary network issue) warrant a retry.
