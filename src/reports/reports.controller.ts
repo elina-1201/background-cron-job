@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { inngest } from 'src/inngest';
 import { CreateReportDto } from './dto/create-report.dto';
-import type { Report } from './report.model';
+import type { Report } from './helpers/report.model';
 import { ReportsService } from './reports.service';
 
 @Controller('reports')

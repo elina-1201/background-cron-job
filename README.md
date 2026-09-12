@@ -79,3 +79,10 @@ $ curl -s -w '\n[HTTP %{http_code}]\n' http://localhost:3000/reports/3
 
 ## Retry logic
 Invalid input (like a missing topic) is rejected immediately with a 400 and never retried, because retrying won't fix bad data — only transient failures (a "wrong moment," like a temporary network issue) warrant a retry.
+
+## Cron expressions
+Used [crontab guru](https://crontab.guru/) for generation. 
+| Schedule | Cron expression |
+| --- | --- |
+| Every day at 08:00 | `0 8 * * *` |
+| Every Sunday at 22:00 | `0 22 * * 7` |

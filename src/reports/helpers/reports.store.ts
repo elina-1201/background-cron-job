@@ -24,13 +24,13 @@ class ReportsStore {
         return [...this.reports.values()];
     }
 
-    markDone(id: number, result: string): Report | undefined {
+    markReport(id: number, status: ReportStatus, result?: string): Report | undefined {
         const report = this.reports.get(id);
         if (!report) {
             return undefined;
         }
 
-        report.status = ReportStatus.DONE;
+        report.status = status;
         report.result = result;
 
         return report;

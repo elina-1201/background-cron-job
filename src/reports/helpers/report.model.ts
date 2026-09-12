@@ -7,6 +7,6 @@ export interface Report {
 
 export enum ReportStatus {
     PENDING = 'pending',
-    IN_PROGRESS = 'in_progress',
+    FAILED = 'failed',
     DONE = 'done',
 }
