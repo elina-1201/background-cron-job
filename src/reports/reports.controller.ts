@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { inngest } from 'src/inngest';
+import { CreateReportDto } from './dto/create-report.dto';
 import type { Report } from './report.model';
 import { ReportsService } from './reports.service';
 
@@ -11,7 +12,7 @@ export class ReportsController {
 
     @HttpCode(HttpStatus.ACCEPTED)
     @Post()
-    async addReport(@Body() body: { topic: string }): Promise<Report> {
+    async addReport(@Body() body: CreateReportDto): Promise<Report> {
         const addedReport: Report = this.reportsService.addReport(body.topic);
 
         await inngest.send({
