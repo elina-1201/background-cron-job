@@ -32,8 +32,30 @@ class ReportsStore {
 
         report.status = status;
         report.result = result;
+        if (status === ReportStatus.DONE) {
+            report.completedAt = Date.now();
+        } else {
+            delete report.completedAt;
+        }
 
         return report;
+    }
+
+    /** Deletes every DONE report completed at least `maxAgeMs` ago; returns the deleted reports. */
+    deleteDoneOlderThan(maxAgeMs: number): Report[] {
+        const cutoff = Date.now() - maxAgeMs;
+        const stale = this.getAll().filter(
+            (report) =>
+                report.status === ReportStatus.DONE &&
+                report.completedAt !== undefined &&
+                report.completedAt <= cutoff,
+        );
+
+        for (const report of stale) {
+            this.reports.delete(report.id);
+        }
+
+        return stale;
     }
 }
 

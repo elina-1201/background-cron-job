@@ -73,8 +73,37 @@ const hartbeat = inngest.createFunction(
     },
 );
 
+const DONE_REPORT_TTL_MS = 10 * 60 * 1000;
+
+const formatDuration = (ms: number): string =>
+    ms >= 60_000
+        ? `${Math.round(ms / 60_000)} minute(s)`
+        : `${Math.round(ms / 1_000)} second(s)`;
+
+const cleanupDoneReports = inngest.createFunction(
+    {
+        id: "cleanup-done-reports",
+        triggers: [{ cron: "* * * * *" }],
+    },
+    async ({ step }) => {
+        const deleted = await step.run("delete-stale-done-reports", async () =>
+            reportsStore.deleteDoneOlderThan(DONE_REPORT_TTL_MS),
+        );
+
+        const date = new Date().toISOString();
+        console.log(
+            "\x1b[36m%s\x1b[0m %s",
+            `[${date}]`,
+            `Cleanup: deleted ${deleted.length} done report(s) older than ${formatDuration(DONE_REPORT_TTL_MS)}`,
+        );
+
+        return { deleted: deleted.map(({ id }) => id) };
+    },
+);
+
 export const functions = [
     helloWorld,
     makeReport,
     hartbeat,
+    cleanupDoneReports,
 ];

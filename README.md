@@ -1,4 +1,4 @@
-# Report API — background jobs with NestJS + Inngest
+# Report API: background jobs with NestJS + Inngest
 
 A small NestJS API that shows the standard pattern for long-running work without making the
 client wait:
@@ -45,6 +45,7 @@ Inngest functions (`src/inngest/index.ts`), served at `/api/inngest`:
 | `say-hello` | event `test/hello` | Sleeps 5s, returns a greeting. |
 | `make-report` | event `report/requested` | Sleeps 8s, then builds the result and marks the report `done`. `retries: 2`; throws if `topic` is `"fail"`. |
 | `heartbeat` | cron `* * * * *` | Runs every minute: counts reports by status and logs a heartbeat line. |
+| `cleanup-done-reports` | cron `* * * * *` | Runs every minute: deletes `done` reports completed more than 10 minutes ago and logs the count. |
 
 ## Examples
 
@@ -93,3 +94,9 @@ Used [crontab guru](https://crontab.guru/) for generation.
 | --- | --- |
 | Every day at 08:00 | `0 8 * * *` |
 | Every Sunday at 22:00 | `0 22 * * 7` |
+
+## The restart experiment
+While a job was running, the API server was stopped and then resumed a few seconds later. The
+expected behaviour was that the runs would disappear from the Inngest dashboard; instead, they
+carried on and completed successfully. This demonstrates the durability of the tool: work in
+progress survives a restart because Inngest persists each step and resumes it.
